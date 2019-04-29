@@ -1,0 +1,24 @@
+{% extends "layout.twig" %}
+
+{% block title %}Dev skills{% endblock %}
+{% block content %}
+    <h1>Devs</h1>
+    <div class="users" data-infinite-scroll='{ "path": "products?page={{ '{{' }}#{{ '}}' }}", "append": ".product", "history": false, "status": ".page-load-status" }'>
+        {% for user in userData %}
+            <div class="user">
+                <a href="{{ path_for('user', { 'id': user.id }) }}">
+                    <p class="name">{{ user.id }}</p>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="page-load-status">
+        <p class="infinite-scroll-request">Loading...</p>
+        <p class="infinite-scroll-last"></p>
+        <p class="infinite-scroll-error" style="display: none">No more products</p>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript" src="//unpkg.com/infinite-scroll@3/dist/infinite-scroll.pkgd.min.js"></script>
+{% endblock %}

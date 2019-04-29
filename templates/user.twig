@@ -1,0 +1,15 @@
+{% extends "layout.twig" %}
+
+{% block title %}User{% endblock %}
+{% block content %}
+<h1>User page</h1>
+<div class="user">
+    <p class="name">{{ userData.id }}</p>
+    {% for field in userData.skills %}
+        <p class="description" data-field="{{field.id}}"><span>{{field.title}}</span>: {{ field.score }}</p>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}
