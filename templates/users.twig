@@ -19,7 +19,7 @@
                     <td><a href="{{ path_for('user', { 'id': user.id }) }}">{{ user.id }}</a></td>
                     {% for skill in user.skills %}
                         {% if skill.score %}
-                            <td class="skill {{ skill.level | lower }}" data-completed="{{skill.dateCompleted | slice(0, 10)}}">{{ skill.score }}</td>
+                            <td class="skill {{ skill.level | lower }} {{ skill.recent }}" title="Completed: {{skill.dateCompleted | slice(0, 10)}}"><span>{{ skill.score }}</span></td>
                         {% else %}
                             <td class="empty-skill"></td>
                         {% endif %}

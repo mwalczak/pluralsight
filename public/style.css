@@ -18,6 +18,11 @@ tfoot th {
     padding: 5px;
     border: 1px solid #000000;
 }
+.recent span {
+    padding: 3px;
+    border-bottom: 1px solid #000000;
+    border-right: 1px solid #000000;
+}
 .expert {
     background-color: #26C1FB;
 }

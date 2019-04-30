@@ -51,8 +51,12 @@ class AppController
             foreach($data['skills'] as $skillId => $skillData){
                 if($skillData['score']>0){
                     $skillSums[$skillId][]=$skillData['score'];
+                    if(strtotime($skillData['dateCompleted']) > time()-2*24*3600){
+                        $data['skills'][$skillId] = array_merge($skillData, ['recent'=>'recent']);
+                    }
                 }
             }
+            $userData[$userId] = $data;
         }
         $skillAvgs = [];
         foreach($skillSums as $skillId=>$skillSum){
