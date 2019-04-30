@@ -4,5 +4,6 @@
 /.idea/
 /cache/*
 !/cache/git.keep
-!/cache/backup/git.keep
+/backup/*
+!/backup/git.keep
 /src/settings.php
