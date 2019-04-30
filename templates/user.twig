@@ -18,7 +18,7 @@
         <tbody>
         {% for skill in userData.skills %}
             {% if skill.score %}
-                <tr>
+                <tr class="{{ skill.level | lower }}">
                     <td>{{skill.title}}</td>
                     <td>{{skill.score}}</td>
                     <td>{{skill.percentile}}</td>

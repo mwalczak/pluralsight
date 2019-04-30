@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>{% block title %}{% endblock %} - PluralSightReader</title>
-    <link href='/style.css' rel='stylesheet' type='text/css'/>
+    <link href='{{ path_for('home') }}style.css' rel='stylesheet' type='text/css'/>
     {% block head %}
     {% endblock %}
 </head>

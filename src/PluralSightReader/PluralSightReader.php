@@ -30,18 +30,21 @@ class PluralSightReader
         $users = [];
         //get user data
         foreach($userIds as $userId){
-            $users[$userId] = $this->fetch($userId, $order);
+            $users[$userId] = $this->fetch($userId);
         }
         //fill order array
+        $ordersWithNames = [];
         foreach($users as $userId=>$userData){
             if(!empty($userData['skills'])){
                 foreach($userData['skills'] as $skill){
                     if(!in_array($skill['id'], $order)){
                         $order[] = $skill['id'];
                     }
+                    $ordersWithNames[$skill['id']] = ['id'=>$skill['id'], 'title'=>$skill['title']];
                 }
             }
         }
+        $ordersWithNames = array_merge(array_flip($order), $ordersWithNames); //order array
         //order skills
         foreach($users as $userId=>$userData){
             if(!empty($userData['skills'])) {
@@ -49,10 +52,11 @@ class PluralSightReader
             }
             $users[$userId] = $userData;
         }
+        $order = $ordersWithNames;
         return $users;
     }
 
-    private function fetch($userId, &$order, $ignoreCache = false){
+    private function fetch($userId, $ignoreCache = false){
         $cacheFile = $this->cache.$userId.".json";
         if(!empty($this->cache) && is_file($cacheFile) && !$ignoreCache){
             return json_decode(file_get_contents($cacheFile), true);
