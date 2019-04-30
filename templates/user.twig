@@ -2,12 +2,33 @@
 
 {% block title %}User{% endblock %}
 {% block content %}
-<h1>User page</h1>
+<h1>Dev page</h1>
 <div class="user">
     <p class="name">{{ userData.id }}</p>
-    {% for field in userData.skills %}
-        <p class="description" data-field="{{field.id}}"><span>{{field.title}}</span>: {{ field.score }}</p>
-    {% endfor %}
+    <table cellpadding="0" cellspacing="0">
+        <thead>
+        <tr>
+            <th>Skill</th>
+            <th>Score</th>
+            <th>Percentile</th>
+            <th>Level</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for skill in userData.skills %}
+            {% if skill.score %}
+                <tr>
+                    <td>{{skill.title}}</td>
+                    <td>{{skill.score}}</td>
+                    <td>{{skill.percentile}}</td>
+                    <td>{{skill.level}}</td>
+                    <td>{{skill.dateCompleted | slice(0, 10)}}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}
 

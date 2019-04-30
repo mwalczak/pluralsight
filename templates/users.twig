@@ -4,18 +4,35 @@
 {% block content %}
     <h1>Devs</h1>
     <div class="users" data-infinite-scroll='{ "path": "products?page={{ '{{' }}#{{ '}}' }}", "append": ".product", "history": false, "status": ".page-load-status" }'>
-        {% for user in userData %}
-            <div class="user">
-                <a href="{{ path_for('user', { 'id': user.id }) }}">
-                    <p class="name">{{ user.id }}</p>
-                </a>
-            </div>
-        {% endfor %}
+        <table id="skills" cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    {% for skill in order %}
+                        <th title="{{ skill }}">{{ skill  | slice(0, 10) }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+            {% for user in userData %}
+                <tr class="user">
+                    <td><a href="{{ path_for('user', { 'id': user.id }) }}">{{ user.id }}</a></td>
+                    {% for skill in user.skills %}
+                        {% if skill.score %}
+                            <td class="skill" data-completed="{{skill.dateCompleted | slice(0, 10)}}">{{ skill.score }}</td>
+                        {% else %}
+                            <td class="empty-skill"></td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
     <div class="page-load-status">
         <p class="infinite-scroll-request">Loading...</p>
         <p class="infinite-scroll-last"></p>
-        <p class="infinite-scroll-error" style="display: none">No more products</p>
+        <p class="infinite-scroll-error" style="display: none">No more users</p>
     </div>
 {% endblock %}
 

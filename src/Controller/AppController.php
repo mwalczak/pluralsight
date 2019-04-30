@@ -42,16 +42,20 @@ class AppController
 
     public function usersAction(Request $request, Response $response, array $args)
     {
+        $skillsOrder = $this->settings['pluralsight']['order'];
         $psReader = new PluralSightReader($this->settings['pluralsight']['cache'], $this->logger);
-        $userData = $psReader->getUsers($this->settings['pluralsight']['users']);
+        $userData = $psReader->getUsers($this->settings['pluralsight']['users'], $skillsOrder);
+
         $args['userData'] = $userData;
+        $args['order'] = $skillsOrder;
         return $this->render($response, 'users.twig', $args);
     }
 
     public function userAction(Request $request, Response $response, array $args)
     {
+        $skillsOrder = $this->settings['pluralsight']['order'];
         $psReader = new PluralSightReader($this->settings['pluralsight']['cache'], $this->logger);
-        $userData = $psReader->getUsers([$args['id']]);
+        $userData = $psReader->getUsers([$args['id']], $skillsOrder);
 
         if (empty($userData[$args['id']])) {
             return $response->withStatus(404);
