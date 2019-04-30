@@ -10,8 +10,9 @@ td {
     padding: 5px;
     border: 1px solid #000000;
 }
-th {
+thead th {
     padding: 0 5px;
+    cursor: pointer;
 }
 tfoot th {
     background-color: #c1c1c1;
