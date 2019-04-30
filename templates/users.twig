@@ -27,6 +27,14 @@
                 </tr>
             {% endfor %}
             </tbody>
+            <tfoot>
+            <tr>
+                <th>Avg</th>
+                {% for skillAvg in skillAvgs %}
+                    <th>{{ skillAvg }}</th>
+                {% endfor %}
+            </tr>
+            </tfoot>
         </table>
     </div>
 {% endblock %}

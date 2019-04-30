@@ -46,7 +46,20 @@ class AppController
         $psReader = new PluralSightReader($this->settings['pluralsight']['cache'], $this->logger);
         $userData = $psReader->getUsers($this->settings['pluralsight']['users'], $skillsOrder);
 
+        $skillSums = array_fill_keys(array_keys($skillsOrder), []);
+        foreach($userData as $userId=>$data){
+            foreach($data['skills'] as $skillId => $skillData){
+                if($skillData['score']>0){
+                    $skillSums[$skillId][]=$skillData['score'];
+                }
+            }
+        }
+        $skillAvgs = [];
+        foreach($skillSums as $skillId=>$skillSum){
+            $skillAvgs[$skillId] = round(array_sum($skillSum)/count($skillSum));
+        }
         $args['userData'] = $userData;
+        $args['skillAvgs'] = $skillAvgs;
         $args['order'] = $skillsOrder;
         return $this->render($response, 'users.twig', $args);
     }

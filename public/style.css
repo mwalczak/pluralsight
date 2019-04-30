@@ -13,6 +13,11 @@ td {
 th {
     padding: 0 5px;
 }
+tfoot th {
+    background-color: #c1c1c1;
+    padding: 5px;
+    border: 1px solid #000000;
+}
 .expert {
     background-color: #26C1FB;
 }
