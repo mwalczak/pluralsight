@@ -1,7 +1,7 @@
 <?php
 return [
     'settings' => [
-        'displayErrorDetails' => true, // set to false in production
+        'displayErrorDetails' => false, // set to false in production
         'addContentLengthHeader' => false, // Allow the web server to send the content-length header
 
         // Renderer settings
@@ -18,6 +18,10 @@ return [
         ],
 
         'pluralsight' => [
+            'cache' => __DIR__ . '/../cache/',
+            'order' => [
+                'php','mysql','html5','javascript','jquery','css','domain-driven-design','git','web-application-security','security-fundamentals','server-maintenance-fundamentals','linux-administration','linux-fundamentals','networking-fundamentals-n10-007','devops','the-scrum-framework'
+            ],
             'users' => []   //user-id ex. 6003f2f8-23e4-4711-aecd-e84f0a7e40a4
         ]
     ],
