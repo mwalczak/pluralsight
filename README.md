@@ -17,6 +17,8 @@ https://app.pluralsight.com/profile/data/skillmeasurements/6003f2f8-23e4-4711-ae
 Run this command from the directory in which you want to install your new Slim Framework application.
 
     composer install
+    chmod u+x install.sh
+    ./install.sh
 
 Configure your product feed url in settings.php
     
@@ -28,6 +30,11 @@ Run php server or setup your vhost configuration to /public
     
     php -S localhost:8080 -t public
    
+Clear cache /refresh skill ex. setup in crontab on daily basis
+    
+    ./clear_cache.sh
+
+   
 ## Dev dependencies
 PHP 7.x
    
@@ -35,4 +42,8 @@ PHP 7.x
 2019-04-29 
 
 Project start
+
+2019-04-30 
+
+Style, avarages, recent skills, tools
 
