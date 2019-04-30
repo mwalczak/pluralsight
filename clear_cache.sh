@@ -1,3 +1,3 @@
 #!/bin/bash
 cd "$(dirname "$0")"
-rm cache/*.json
+mv cache/*.json cache/backup/
