@@ -36,7 +36,7 @@ class AppController
 
     private function render(Response $response, string $template, array $args)
     {
-        $this->logger->info("Render ".$template. " with args:".json_encode($args));
+        $this->logger->info("Render ".$template. " from client: ".$_SERVER['HTTP_USER_AGENT'].", ip: ".$_SERVER['REMOTE_ADDR']);
         return $this->renderer->render($response, $template, $args);
     }
 
