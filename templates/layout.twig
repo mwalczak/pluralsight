@@ -9,7 +9,7 @@
 </head>
 <body>
 <div id="header">
-    <a href="/"><i class="fas fa-home" title="go to homepage"></i>Home</a>
+    <a href="{{ path_for('home') }}"><i class="fas fa-home" title="go to homepage"></i>Home</a>
     <a href="{{ path_for('recent') }}"><i class="fas fa-concierge-bell" title="go to recent"></i>Recent</a>
 </div>
 <div id="content" data-session-id="{{ sessionId }}">

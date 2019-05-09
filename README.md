@@ -39,11 +39,16 @@ Clear cache /refresh skill ex. setup in crontab on daily basis
 PHP 7.x
    
 ## What's new
-2019-04-29 
+2019-05-09 
 
-Project start
+Recently updated skills page
 
 2019-04-30 
 
 Style, avarages, recent skills, tools
+
+2019-04-29 
+
+Project start
+
 
