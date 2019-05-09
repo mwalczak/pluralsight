@@ -22,6 +22,7 @@ return [
             'order' => [
                 'php','mysql','html5','javascript','jquery','css','domain-driven-design','git','web-application-security','security-fundamentals','server-maintenance-fundamentals','linux-administration','linux-fundamentals','networking-fundamentals-n10-007','devops','the-scrum-framework'
             ],
+            'recent_to_show' => 20,
             'users' => []   //user-id ex. 6003f2f8-23e4-4711-aecd-e84f0a7e40a4
         ]
     ],
