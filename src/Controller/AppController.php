@@ -82,4 +82,14 @@ class AppController
         return $this->render($response, 'user.twig', $args);
     }
 
+    public function recentAction(Request $request, Response $response, array $args)
+    {
+        $psReader = new PluralSightReader($this->settings['pluralsight']['cache'], $this->logger);
+        $userData = $psReader->getRecent($this->settings['pluralsight']['users'], $this->settings['pluralsight']['recent_to_show']);
+
+        $args['recent'] = $userData;
+
+        return $this->render($response, 'recent.twig', $args);
+    }
+
 }

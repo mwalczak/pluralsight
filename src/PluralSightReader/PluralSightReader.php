@@ -56,6 +56,27 @@ class PluralSightReader
         return $users;
     }
 
+    public function getRecent(array $userIds, $limit = 0){
+        $recent = [];
+        //get user data
+        foreach($userIds as $userId){
+            $userData = $this->fetch($userId);
+            if(!empty($userData['skills'])){
+                foreach($userData['skills'] as $skill){
+                    $skill['user'] = $userId;
+                    $recent[$skill['dateCompleted']] = $skill;
+                }
+            }
+
+        }
+        krsort($recent);
+        if($limit){
+            $recent = array_slice($recent, 0, $limit);
+        }
+
+        return $recent;
+    }
+
     private function fetch($userId, $ignoreCache = false){
         $cacheFile = $this->cache.$userId.".json";
         if(!empty($this->cache) && is_file($cacheFile) && !$ignoreCache){
