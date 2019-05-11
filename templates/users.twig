@@ -16,7 +16,15 @@
             <tbody>
             {% for user in userData %}
                 <tr class="user">
-                    <td><a href="{{ path_for('user', { 'id': user.id }) }}">{{ user.id }}</a></td>
+                    <td>
+                        <a href="{{ path_for('user', { 'id': user.id }) }}">
+                            {% if session.signedInUser and user.name %}
+                                {{ user.name }}
+                            {% else %}
+                                {{ user.id }}
+                            {% endif %}
+                        </a>
+                    </td>
                     {% for skill in user.skills %}
                         {% if skill.score %}
                             <td class="skill {{ skill.level | lower }} {{ skill.recent }}" title="Completed: {{skill.dateCompleted | slice(0, 10)}}"><span>{{ skill.score }}</span></td>

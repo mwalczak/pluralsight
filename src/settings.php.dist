@@ -24,6 +24,17 @@ return [
             ],
             'recent_to_show' => 20,
             'users' => []   //user-id ex. 6003f2f8-23e4-4711-aecd-e84f0a7e40a4
+            'usersDetails' => ['user-id' => ['name'=>'John Doe']]   //user-id as key
+        ],
+
+        //Google sign in client ID - generate here https://developers.google.com/identity/sign-in/web/sign-in
+        'google' => [
+            'clientId' => 'GOOGLE_APP_ID.apps.googleusercontent.com',
+        ],
+
+        //These users after login see user details
+        'users' => [
+            'admin@example.com'
         ]
     ],
 ];

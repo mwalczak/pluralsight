@@ -39,6 +39,10 @@ Clear cache /refresh skill ex. setup in crontab on daily basis
 PHP 7.x
    
 ## What's new
+2019-05-11 
+
+Sign in with google to see user details, session handling
+
 2019-05-09 
 
 Recently updated skills page

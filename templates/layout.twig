@@ -9,6 +9,12 @@
 </head>
 <body>
 <div id="header">
+    {% if settings.google.clientId and session.signedIn == false %}
+        <a href="#" id="google-sign-in"><i class="fas fa-sign-in-alt"></i>Sign in</a>
+    {% endif %}
+    {% if settings.google.clientId and session.signedIn %}
+        <a href="#" id="google-sign-out" onclick="signOut();"><i class="fas fa-sign-out-alt"></i>Sign out</a>
+    {% endif %}
     <a href="{{ path_for('home') }}"><i class="fas fa-home" title="go to homepage"></i>Home</a>
     <a href="{{ path_for('recent') }}"><i class="fas fa-concierge-bell" title="go to recent"></i>Recent</a>
 </div>
@@ -22,6 +28,57 @@
 <!-- Pick a theme, load the plugin & initialize plugin -->
 <script src="{{ path_for('home') }}jquery.tablesorter.min.js"></script>
 <script src="{{ path_for('home') }}jquery.tablesorter.widgets.min.js"></script>
+{% if settings.google.clientId %}
+    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+    <script>
+        function init() {
+            gapi.load('auth2', function() {
+                gapi.auth2.init({
+                    client_id: '{{ settings.google.clientId }}'
+                }).then(function(){
+                    var btn = document.getElementById('google-sign-in');
+                    if(btn){
+                        attachSignIn(btn);
+                    }
+                });
+            });
+        }
+
+        function attachSignIn(element) {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.attachClickHandler(element, {},
+                onSignIn,
+                function (error) {
+                    console.log(JSON.stringify(error, undefined, 2));
+                }
+            );
+        }
+
+        function onSignIn(googleUser) {
+            var id_token = googleUser.getAuthResponse().id_token;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '{{ path_for('home') }}tokensignin');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+                window.location.href = '{{ path_for('home') }}';
+            };
+            xhr.send('idtoken=' + id_token);
+        }
+
+        function signOut() {
+            console.log('sign out clicked');
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '{{ path_for('home') }}tokensignout');
+                xhr.onload = function() {
+                    window.location.href = '{{ path_for('home') }}';
+                };
+                xhr.send(null);
+            });
+        }
+    </script>
+{% endif %}
 <script>
     $(function(){
         $('table').tablesorter({

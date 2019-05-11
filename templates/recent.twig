@@ -2,35 +2,43 @@
 
 {% block title %}Recent skills{% endblock %}
 {% block content %}
-<h1>Recent skills page</h1>
-<div class="user">
-    <table cellpadding="0" cellspacing="0">
-        <thead>
-        <tr>
-            <th>User</th>
-            <th>Skill</th>
-            <th>Score</th>
-            <th>Percentile</th>
-            <th>Level</th>
-            <th>Date</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for skill in recent %}
-            {% if skill.score %}
-                <tr class="{{ skill.level | lower }}">
-                    <td><a href="{{ path_for('user', { 'id': skill.user }) }}">{{ skill.user }}</a></td>
-                    <td>{{skill.title}}</td>
-                    <td>{{skill.score}}</td>
-                    <td>{{skill.percentile}}</td>
-                    <td>{{skill.level}}</td>
-                    <td>{{skill.dateCompleted | date("Y-m-d H:i:s")}}</td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+    <h1>Recent skills page</h1>
+    <div class="user">
+        <table cellpadding="0" cellspacing="0">
+            <thead>
+            <tr>
+                <th>User</th>
+                <th>Skill</th>
+                <th>Score</th>
+                <th>Percentile</th>
+                <th>Level</th>
+                <th>Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for skill in recent %}
+                {% if skill.score %}
+                    <tr class="{{ skill.level | lower }}">
+                        <td>
+                            <a href="{{ path_for('user', { 'id': skill.user.id }) }}">
+                                {% if session.signedInUser and skill.user.name %}
+                                    {{ skill.user.name }}
+                                {% else %}
+                                    {{ skill.user.id }}
+                                {% endif %}
+                            </a>
+                        </td>
+                        <td>{{ skill.title }}</td>
+                        <td>{{ skill.score }}</td>
+                        <td>{{ skill.percentile }}</td>
+                        <td>{{ skill.level }}</td>
+                        <td>{{ skill.dateCompleted | date("Y-m-d H:i:s") }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
 
 {% block script %}
