@@ -20,11 +20,17 @@ Run this command from the directory in which you want to install your new Slim F
     chmod u+x install.sh
     ./install.sh
 
-Configure your product feed url in settings.php
+Configure application:
+
+    pluralsight[users] - pluralsight profile list    
     
-    'users' => [
-        '6003f2f8-23e4-4711-aecd-e84f0a7e40a4',
-    ]
+Optional configuration:
+    
+    pluralsight[order] - show these skills first and order them
+    pluralsight[recent_to_show] - how many recent skills to show in recent page
+    pluralsight[usersDetails] - names to show when admin users logged
+    google[clientId] - sign in with google (app id)
+    users - ofter these emails sign in with google they see names instead of ids
 
 Run php server or setup your vhost configuration to /public
     
