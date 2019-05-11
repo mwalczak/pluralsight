@@ -26,7 +26,7 @@ class PluralSightReader
         $this->curl->setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36');
     }
 
-    public function getUsers(array $userIds, &$order){
+    public function getUsers(array $userIds, &$order, $userDetails = []){
         $users = [];
         //get user data
         foreach($userIds as $userId){
@@ -50,20 +50,26 @@ class PluralSightReader
             if(!empty($userData['skills'])) {
                 $userData['skills'] = array_merge(array_flip($order), $userData['skills']); //order array
             }
+            if(!empty($userDetails[$userId])){
+                $userData = array_merge($userData, $userDetails[$userId]);
+            }
             $users[$userId] = $userData;
         }
         $order = $ordersWithNames;
         return $users;
     }
 
-    public function getRecent(array $userIds, $limit = 0){
+    public function getRecent(array $userIds, $limit = 0, $userDetails = []){
         $recent = [];
         //get user data
         foreach($userIds as $userId){
             $userData = $this->fetch($userId);
             if(!empty($userData['skills'])){
                 foreach($userData['skills'] as $skill){
-                    $skill['user'] = $userId;
+                    if(!empty($userDetails[$userId])){
+                        $skill['user'] = $userDetails[$userId];
+                    }
+                    $skill['user']['id'] = $userId;
                     $recent[$skill['dateCompleted']] = $skill;
                 }
             }
