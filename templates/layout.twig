@@ -14,6 +14,7 @@
     {% endif %}
     {% if settings.google.clientId and session.signedIn %}
         <a href="#" id="google-sign-out" onclick="signOut();"><i class="fas fa-sign-out-alt"></i>Sign out</a>
+        <a href="{{ path_for('csv') }}"><i class="fas fa-download" title="go to homepage"></i>Csv</a>
     {% endif %}
     <a href="{{ path_for('home') }}"><i class="fas fa-home" title="go to homepage"></i>Home</a>
     <a href="{{ path_for('recent') }}"><i class="fas fa-concierge-bell" title="go to recent"></i>Recent</a>
@@ -34,7 +35,8 @@
         function init() {
             gapi.load('auth2', function() {
                 gapi.auth2.init({
-                    client_id: '{{ settings.google.clientId }}'
+                    client_id: '{{ settings.google.clientId }}',
+                    scope: 'profile email https://www.googleapis.com/auth/spreadsheets.readonly'
                 }).then(function(){
                     var btn = document.getElementById('google-sign-in');
                     if(btn){
@@ -55,14 +57,16 @@
         }
 
         function onSignIn(googleUser) {
-            var id_token = googleUser.getAuthResponse().id_token;
+            var authResponse = googleUser.getAuthResponse(true);
+            var id_token = authResponse.id_token;
+            var access_token = authResponse.access_token;
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '{{ path_for('home') }}tokensignin');
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onload = function() {
                 window.location.href = '{{ path_for('home') }}';
             };
-            xhr.send('idtoken=' + id_token);
+            xhr.send('idtoken=' + id_token + '&accesstoken=' + access_token);
         }
 
         function signOut() {
