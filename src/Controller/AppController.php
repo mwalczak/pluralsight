@@ -221,6 +221,11 @@ class AppController
                         'message'=>"Empty users set."
                     ]);
                 }
+                foreach($rows as $id=>$row){
+                    if(empty($row[0])){
+                        unset($rows[$id]);
+                    }
+                }
                 $header = null;
                 if(in_array("name", $rows[0])){ //check if there's a header in data
                     $header = $rows[0];
