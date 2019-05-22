@@ -44,7 +44,20 @@ Clear cache /refresh skill ex. setup in crontab on daily basis
     
     ./clear_cache.sh
 
-   
+## Google spreadsheet integration
+
+Create and configure project for Google sign-in
+https://developers.google.com/identity/sign-in/web/sign-in
+Copy clientId to configuration:
+    
+    google[clientId]    
+
+Enable Google Spreadsheet integration
+https://console.developers.google.com/apis/api/sheets.googleapis.com/  
+Insert document id to configuration:
+
+    pluralsight[userSheet]
+
 ## Dev dependencies
 PHP 7.x
    
