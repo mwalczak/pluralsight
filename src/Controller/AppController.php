@@ -52,11 +52,48 @@ class AppController
         return $this->renderer->render($response, $template, $args);
     }
 
+    private function loadUsers(&$users, &$usersDetails){
+        $users = [];
+        $usersDetails = [];
+        if(is_file(__DIR__."/../../data/users.json")){
+            $usersData = json_decode(file_get_contents(__DIR__."/../../data/users.json"), true);
+            if(is_file(__DIR__."/../../data/header.json")){
+                $header = json_decode(file_get_contents(__DIR__."/../../data/header.json"), true);
+                $idColumn = array_search("id", $header);
+            } else {
+                $header = ['id'];
+                $idColumn = 0;
+            }
+            foreach($usersData as $user){
+                $users[] = $user[$idColumn];
+                if(count($header)>1){
+                    unset($header[0]);
+                    foreach($header as $headerIdx => $headerValue){
+                        $usersDetails[$user[$idColumn]][$headerValue] = $user[$headerIdx];
+                    }
+                }
+            }
+            return $header;
+        }
+        if($this->settings['pluralsight']['users']){
+            $users = $this->settings['pluralsight']['users'];
+        }
+        if($this->settings['pluralsight']['usersDetails']){
+            $usersDetails = $this->settings['pluralsight']['usersDetails'];
+            return array_keys($usersDetails[0]);
+        }
+    }
+
     public function usersAction(Request $request, Response $response, array $args)
     {
         $skillsOrder = $this->settings['pluralsight']['order'];
         $psReader = new PluralSightReader($this->settings['pluralsight']['cache'], $this->logger);
-        $userData = $psReader->getUsers($this->settings['pluralsight']['users'], $skillsOrder, $this->settings['pluralsight']['usersDetails']);
+
+        $users = [];
+        $usersDetails = [];
+        $header = $this->loadUsers($users, $usersDetails);
+
+        $userData = $psReader->getUsers($users, $skillsOrder, $usersDetails);
 
         $skillSums = array_fill_keys(array_keys($skillsOrder), []);
         foreach ($userData as $userId => $data) {
@@ -77,6 +114,7 @@ class AppController
         $args['userData'] = $userData;
         $args['skillAvgs'] = $skillAvgs;
         $args['order'] = $skillsOrder;
+        $args['header'] = array_slice($header, 1);
         if(!empty($args['csv']) && $this->settings['pluralsight']['usersDetails'] && $this->session->signedInUser){
             $out = fopen('php://temp', 'w');
             //header
@@ -108,7 +146,10 @@ class AppController
     {
         $skillsOrder = $this->settings['pluralsight']['order'];
         $psReader = new PluralSightReader($this->settings['pluralsight']['cache'], $this->logger);
-        $userData = $psReader->getUsers([$args['id']], $skillsOrder, $this->settings['pluralsight']['usersDetails']);
+        $users = [];
+        $usersDetails = [];
+        $this->loadUsers($users, $usersDetails);
+        $userData = $psReader->getUsers([$args['id']], $skillsOrder, $usersDetails);
 
         if (empty($userData[$args['id']])) {
             return $response->withStatus(404);
@@ -162,20 +203,47 @@ class AppController
     public function importAction(Request $request, Response $response, array $args)
     {
         if(empty($this->settings['pluralsight']['userSheet'])){
-            $response->getBody()->rewind();
-            $response->getBody()->write("Set ['pluralsight']['userSheet'] config option to get access to user list");
-            return $response->withStatus(404);
+            return $response->withStatus(404)->withJson([
+                'error'=>true,
+                'message'=>"Set ['pluralsight']['userSheet'] config option to get access to user list."
+            ]);
         }
         $client = new \Google_Client(['client_id' => $this->settings['google']['clientId']]);
         if(!empty($this->session->token)){
             $client->setAccessToken($this->session->token);
             $service = new \Google_Service_Sheets($client);
             $result = $service->spreadsheets_values->get($this->settings['pluralsight']['userSheet'], "A:E");
-            $numRows = $result->getValues() != null ? count($result->getValues()) : 0;
-            printf("%d rows retrieved.", $numRows);
-            return $response->withStatus(200);
+            $rows = $result->getValues();
+            if(empty($rows)){
+                return $response->withStatus(404)->withJson([
+                    'error'=>true,
+                    'message'=>"Empty users set."
+                ]);
+            }
+            $header = null;
+            if(in_array("name", $rows[0])){ //check if there's a header in data
+                $header = $rows[0];
+                unset($rows[0]);
+            }
+            if(!empty($args['check'])){
+                $numRows =  count($rows);
+                return $response->withStatus(200)->withJson([
+                    'message'=>"$numRows are about to be imported. Continue?"
+                ]);
+            }
+            if(!empty($header)){
+                file_put_contents(__DIR__."/../../data/header.json", json_encode($header));
+            }
+            file_put_contents(__DIR__."/../../data/users.json", json_encode($rows));
+
+            return $response->withStatus(200)->withJson([
+                'message'=>count($rows)." records were imported."
+            ]);
         } else {
-            return $response->withStatus(403);
+            return $response->withStatus(403)->withJson([
+                'error'=>true,
+                'message'=>"Invalid access token. Are you logged in?"
+            ]);
         }
 
     }

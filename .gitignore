@@ -7,3 +7,5 @@
 /backup/*
 !/backup/git.keep
 /src/settings.php
+/data/*
+!/data/git.keep

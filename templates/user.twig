@@ -8,6 +8,9 @@
     {% if userData.name and session.signedInUser %}
     <p class="name">Name: {{ userData.name }}</p>
     {% endif %}
+    {% for th, detail in userData.details %}
+        <p class="name">{{ th | capitalize }}: {{ detail }}</p>
+    {% endfor %}
     <table cellpadding="0" cellspacing="0">
         <thead>
         <tr>

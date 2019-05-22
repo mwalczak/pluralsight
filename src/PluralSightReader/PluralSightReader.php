@@ -51,7 +51,9 @@ class PluralSightReader
                 $userData['skills'] = array_merge(array_flip($order), $userData['skills']); //order array
             }
             if(!empty($userDetails[$userId])){
-                $userData = array_merge($userData, $userDetails[$userId]);
+                $userData['name'] = $userDetails[$userId]['name'];
+                unset($userDetails[$userId]['name']);
+                $userData['details'] = $userDetails[$userId];
             }
             $users[$userId] = $userData;
         }
