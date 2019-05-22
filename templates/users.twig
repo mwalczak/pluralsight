@@ -4,45 +4,63 @@
 {% block content %}
     <h1>Devs</h1>
     <div class="users">
-        <table id="skills" cellpadding="0" cellspacing="0">
-            <thead>
+        {% if userData %}
+            <table id="skills" cellpadding="0" cellspacing="0">
+                <thead>
                 <tr>
-                    <th>User</th>
+                    <th title="User">User</th>
+                    {% for th in header %}
+                        <th title="{{ th }}">{{ th | capitalize }}</th>
+                    {% endfor %}
                     {% for skill in order %}
                         <th title="{{ skill.title }}">{{ skill.title }}</th>
                     {% endfor %}
                 </tr>
-            </thead>
-            <tbody>
-            {% for user in userData %}
-                <tr class="user">
-                    <td>
-                        <a href="{{ path_for('user', { 'id': user.id }) }}">
-                            {% if session.signedInUser and user.name %}
-                                {{ user.name }}
+                </thead>
+                <tbody>
+                {% for user in userData %}
+                    <tr class="user">
+                        <td>
+                            <a href="{{ path_for('user', { 'id': user.id }) }}">
+                                {% if session.signedInUser and user.name %}
+                                    {{ user.name }}
+                                {% else %}
+                                    {{ user.id }}
+                                {% endif %}
+                            </a>
+                        </td>
+                        {% for detail in user.details %}
+                            <td>{{ detail }}</td>
+                        {% endfor %}
+                        {% for skill in user.skills %}
+                            {% if skill.score %}
+                                <td class="skill {{ skill.level | lower }} {{ skill.recent }}"
+                                    title="Completed: {{ skill.dateCompleted | slice(0, 10) }}">
+                                    <span>{{ skill.score }}</span></td>
                             {% else %}
-                                {{ user.id }}
+                                <td class="empty-skill"></td>
                             {% endif %}
-                        </a>
-                    </td>
-                    {% for skill in user.skills %}
-                        {% if skill.score %}
-                            <td class="skill {{ skill.level | lower }} {{ skill.recent }}" title="Completed: {{skill.dateCompleted | slice(0, 10)}}"><span>{{ skill.score }}</span></td>
-                        {% else %}
-                            <td class="empty-skill"></td>
-                        {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>Avg</th>
+                    {% for th in header %}
+                        <th></th>
+                    {% endfor %}
+                    {% for skillAvg in skillAvgs %}
+                        <th>{{ skillAvg }}</th>
                     {% endfor %}
                 </tr>
-            {% endfor %}
-            </tbody>
-            <tfoot>
-            <tr>
-                <th>Avg</th>
-                {% for skillAvg in skillAvgs %}
-                    <th>{{ skillAvg }}</th>
-                {% endfor %}
-            </tr>
-            </tfoot>
-        </table>
+                </tfoot>
+            </table>
+        {% else %}
+            <pre>
+            {% if settings.pluralsight.userSheet and session.signedIn %}No user data - try to import users from menu
+            {% else %}Configure users first{% endif %}
+            </pre>
+        {% endif %}
     </div>
 {% endblock %}

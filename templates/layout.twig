@@ -14,6 +14,10 @@
     {% endif %}
     {% if settings.google.clientId and session.signedIn %}
         <a href="#" id="google-sign-out" onclick="signOut();"><i class="fas fa-sign-out-alt"></i>Sign out</a>
+        <a href="{{ path_for('csv') }}"><i class="fas fa-download" title="download csv"></i>Csv</a>
+        {% if settings.pluralsight.userSheet and session.signedIn %}
+            <a id="importButton" href="{{ path_for('import') }}"><i class="fas fa-file-import" title="import users"></i>Import</a>
+        {% endif %}
     {% endif %}
     <a href="{{ path_for('home') }}"><i class="fas fa-home" title="go to homepage"></i>Home</a>
     <a href="{{ path_for('recent') }}"><i class="fas fa-concierge-bell" title="go to recent"></i>Recent</a>
@@ -24,7 +28,7 @@
 <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.6.3/css/solid.css" integrity="sha384-+0VIRx+yz1WBcCTXBkVQYIBVNEFH1eP6Zknm16roZCyeNg2maWEpk/l/KsyFKs7G" crossorigin="anonymous">
 <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.6.3/css/fontawesome.css" integrity="sha384-jLuaxTTBR42U2qJ/pm4JRouHkEDHkVqH0T1nyQXn1mZ7Snycpf6Rl25VBNthU4z0" crossorigin="anonymous">
 <!-- jQuery: required (tablesorter works with jQuery 1.2.3+) -->
-<script src="{{ path_for('home') }}jquery-1.2.6.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <!-- Pick a theme, load the plugin & initialize plugin -->
 <script src="{{ path_for('home') }}jquery.tablesorter.min.js"></script>
 <script src="{{ path_for('home') }}jquery.tablesorter.widgets.min.js"></script>
@@ -34,7 +38,8 @@
         function init() {
             gapi.load('auth2', function() {
                 gapi.auth2.init({
-                    client_id: '{{ settings.google.clientId }}'
+                    client_id: '{{ settings.google.clientId }}',
+                    scope: 'profile email https://www.googleapis.com/auth/spreadsheets.readonly'
                 }).then(function(){
                     var btn = document.getElementById('google-sign-in');
                     if(btn){
@@ -55,14 +60,16 @@
         }
 
         function onSignIn(googleUser) {
-            var id_token = googleUser.getAuthResponse().id_token;
+            var authResponse = googleUser.getAuthResponse(true);
+            var id_token = authResponse.id_token;
+            var access_token = authResponse.access_token;
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '{{ path_for('home') }}tokensignin');
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onload = function() {
                 window.location.href = '{{ path_for('home') }}';
             };
-            xhr.send('idtoken=' + id_token);
+            xhr.send('idtoken=' + id_token + '&accesstoken=' + access_token);
         }
 
         function signOut() {
@@ -84,6 +91,26 @@
         $('table').tablesorter({
             sortReset      : true,
             sortRestart    : true
+        });
+        $('#importButton').click(function(event){
+            event.preventDefault();
+            $.getJSON('{{ path_for('home') }}importCheck').done(function(data) {
+                if(data.error){
+                    alert(data.message);
+                } else {
+                    if(confirm(data.message)){
+                        $.getJSON('{{ path_for('home') }}import', function(data) {
+                            alert(data.message);
+                            window.location.href = '{{ path_for('home') }}';
+                        }).fail(function(data) {
+                            alert(data.message);
+                        });
+                    }
+                }
+            }).fail(function(jqxhr, textStatus, error) {
+                var response = JSON.parse(jqxhr.responseText);
+                alert(response.message);
+            });
         });
     });
 </script>
