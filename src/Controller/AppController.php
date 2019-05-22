@@ -210,35 +210,43 @@ class AppController
         }
         $client = new \Google_Client(['client_id' => $this->settings['google']['clientId']]);
         if(!empty($this->session->token)){
-            $client->setAccessToken($this->session->token);
-            $service = new \Google_Service_Sheets($client);
-            $result = $service->spreadsheets_values->get($this->settings['pluralsight']['userSheet'], "A:E");
-            $rows = $result->getValues();
-            if(empty($rows)){
-                return $response->withStatus(404)->withJson([
-                    'error'=>true,
-                    'message'=>"Empty users set."
-                ]);
-            }
-            $header = null;
-            if(in_array("name", $rows[0])){ //check if there's a header in data
-                $header = $rows[0];
-                unset($rows[0]);
-            }
-            if(!empty($args['check'])){
-                $numRows =  count($rows);
-                return $response->withStatus(200)->withJson([
-                    'message'=>"$numRows are about to be imported. Continue?"
-                ]);
-            }
-            if(!empty($header)){
-                file_put_contents(__DIR__."/../../data/header.json", json_encode($header));
-            }
-            file_put_contents(__DIR__."/../../data/users.json", json_encode($rows));
+            try {
+                $client->setAccessToken($this->session->token);
+                $service = new \Google_Service_Sheets($client);
+                $result = $service->spreadsheets_values->get($this->settings['pluralsight']['userSheet'], "A:E");
+                $rows = $result->getValues();
+                if(empty($rows)){
+                    return $response->withStatus(404)->withJson([
+                        'error'=>true,
+                        'message'=>"Empty users set."
+                    ]);
+                }
+                $header = null;
+                if(in_array("name", $rows[0])){ //check if there's a header in data
+                    $header = $rows[0];
+                    unset($rows[0]);
+                }
+                if(!empty($args['check'])){
+                    $numRows =  count($rows);
+                    return $response->withStatus(200)->withJson([
+                        'message'=>"$numRows records are about to be imported. Continue?"
+                    ]);
+                }
+                if(!empty($header)){
+                    file_put_contents(__DIR__."/../../data/header.json", json_encode($header));
+                }
+                file_put_contents(__DIR__."/../../data/users.json", json_encode($rows));
 
-            return $response->withStatus(200)->withJson([
-                'message'=>count($rows)." records were imported."
-            ]);
+                return $response->withStatus(200)->withJson([
+                    'message'=>count($rows)." records were imported."
+                ]);
+            } catch (\Exception $exception){
+                return $response->withStatus(403)->withJson([
+                    'error'=>true,
+                    'message'=>$exception->getMessage()
+                ]);
+            }
+
         } else {
             return $response->withStatus(403)->withJson([
                 'error'=>true,

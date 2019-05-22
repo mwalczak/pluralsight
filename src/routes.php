@@ -17,3 +17,5 @@ $app->get('/tokensignout', AppController::class . ':tokenSignOutAction');
 $app->get('/csv', AppController::class . ':usersAction')->setArgument('csv', 1)->setName('csv');
 
 $app->get('/import', AppController::class . ':importAction')->setName('import');
+
+$app->get('/importCheck', AppController::class . ':importAction')->setArgument('check', 1)->setName('import');

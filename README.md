@@ -22,13 +22,17 @@ Run this command from the directory in which you want to install your new Slim F
 
 Configure application:
 
-    pluralsight[users] - pluralsight profile list    
+    pluralsight[users] - pluralsight profile list
+
+or
+
+    pluralsight[userSheet] - pluralsight profile list google sheet
     
 Optional configuration:
     
     pluralsight[order] - show these skills first and order them
     pluralsight[recent_to_show] - how many recent skills to show in recent page
-    pluralsight[usersDetails] - names to show when admin users logged
+    pluralsight[usersDetails] - names to show when admin users logged - when pluralsight[users] mode
     google[clientId] - sign in with google (app id)
     users - ofter these emails sign in with google they see names instead of ids
 
@@ -45,6 +49,10 @@ Clear cache /refresh skill ex. setup in crontab on daily basis
 PHP 7.x
    
 ## What's new
+2019-05-22 
+
+Integration with google spreadsheets to import user data when user logged
+
 2019-05-11 
 
 Sign in with google to see user details, session handling
