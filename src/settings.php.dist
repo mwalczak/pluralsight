@@ -24,7 +24,7 @@ return [
             ],
             'recent_to_show' => 20,
             'userSheet' => '184uMUzfb7QVKNi6qBi2rXoGMwtIte_B95aAzOLqoZPE',  //https://docs.google.com/spreadsheets/d/184uMUzfb7QVKNi6qBi2rXoGMwtIte_B95aAzOLqoZPE/edit
-            'users' => []   //user-id ex. 6003f2f8-23e4-4711-aecd-e84f0a7e40a4
+            'users' => [],   //user-id ex. 6003f2f8-23e4-4711-aecd-e84f0a7e40a4
             'usersDetails' => ['user-id' => ['name'=>'John Doe']]   //user-id as key
         ],
 
