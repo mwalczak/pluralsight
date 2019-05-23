@@ -115,15 +115,17 @@ class AppController
         $args['skillAvgs'] = $skillAvgs;
         $args['order'] = $skillsOrder;
         $args['header'] = array_slice($header, 1);
-        if(!empty($args['csv']) && $this->settings['pluralsight']['usersDetails'] && $this->session->signedInUser){
+        if(!empty($args['csv']) && $this->session->signedInUser){
             $out = fopen('php://temp', 'w');
             //header
-            fputcsv($out, array_merge(['id', 'name'], array_keys($skillsOrder)), ";");
+            fputcsv($out, array_merge(['id'], $header, array_keys($skillsOrder)), ";");
             foreach ($userData as $userId => $user) {
                 $fields = [
                     'id' => $userId,
-                    'name' => $this->settings['pluralsight']['usersDetails'][$userId]['name']
+                    'name' => $user['name']
                 ];
+                $fields = array_merge($fields, $user['details']);
+
                 foreach (array_keys($skillsOrder) as $skill) {
                     $fields[$skill] = $user['skills'][$skill]['score'];
 
