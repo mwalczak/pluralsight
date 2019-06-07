@@ -215,26 +215,30 @@ class AppController
             try {
                 $client->setAccessToken($this->session->token);
                 $service = new \Google_Service_Sheets($client);
-                $result = $service->spreadsheets_values->get($this->settings['pluralsight']['userSheet'], "A:E");
-                $rows = $result->getValues();
-                if(empty($rows)){
+                $userRows = [];
+                $header = null;
+                foreach($this->settings['pluralsight']['userSheet'] as $sheet){
+                    $result = $service->spreadsheets_values->get($sheet, "A:E");
+                    $rows = $result->getValues();
+                    foreach($rows as $id=>$row){
+                        if(empty($row[0])){
+                            unset($rows[$id]);
+                        }
+                    }
+                    if(in_array("name", $rows[0])){ //check if there's a header in data
+                        $header = $rows[0];
+                        unset($rows[0]);
+                    }
+                    $userRows = array_merge($userRows, $rows);
+                }
+                if(empty($userRows)){
                     return $response->withStatus(404)->withJson([
                         'error'=>true,
                         'message'=>"Empty users set."
                     ]);
                 }
-                foreach($rows as $id=>$row){
-                    if(empty($row[0])){
-                        unset($rows[$id]);
-                    }
-                }
-                $header = null;
-                if(in_array("name", $rows[0])){ //check if there's a header in data
-                    $header = $rows[0];
-                    unset($rows[0]);
-                }
                 if(!empty($args['check'])){
-                    $numRows =  count($rows);
+                    $numRows =  count($userRows);
                     return $response->withStatus(200)->withJson([
                         'message'=>"$numRows records are about to be imported. Continue?"
                     ]);
@@ -242,10 +246,10 @@ class AppController
                 if(!empty($header)){
                     file_put_contents(__DIR__."/../../data/header.json", json_encode($header));
                 }
-                file_put_contents(__DIR__."/../../data/users.json", json_encode($rows));
+                file_put_contents(__DIR__."/../../data/users.json", json_encode($userRows));
 
                 return $response->withStatus(200)->withJson([
-                    'message'=>count($rows)." records were imported."
+                    'message'=>count($userRows)." records were imported."
                 ]);
             } catch (\Exception $exception){
                 return $response->withStatus(403)->withJson([
