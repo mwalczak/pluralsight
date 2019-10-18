@@ -39,7 +39,7 @@
                                     <span>
                                         {% if (session.signedInUser or session.signedInDomain) %}
                                             {{ skill.score }}
-                                        {% else %}
+                                        {% endif %}
                                     </span>
                                 </td>
                             {% else %}
