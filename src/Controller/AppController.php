@@ -188,6 +188,8 @@ class AppController
             $this->session->user = $payload;
             if (!empty($payload['email']) && !empty($payload['email_verified']) && !empty($this->settings['users']) && in_array($payload['email'], $this->settings['users'])) {
                 $this->session->signedInUser = true;
+            } elseif (!empty($payload['email']) && !empty($payload['email_verified']) && !empty($this->settings['domains']) && in_array(substr(strrchr($payload['email'], "@"), 1), $this->settings['domains'])) {
+                $this->session->signedInDomain = true;
             }
             return $response->withStatus(200);
         } else {

@@ -22,7 +22,7 @@
                     <tr class="user">
                         <td>
                             <a href="{{ path_for('user', { 'id': user.id }) }}">
-                                {% if session.signedInUser and user.name %}
+                                {% if (session.signedInUser or session.signedInDomain) and user.name %}
                                     {{ user.name }}
                                 {% else %}
                                     {{ user.id }}
@@ -36,7 +36,12 @@
                             {% if skill.score %}
                                 <td class="skill {{ skill.level | lower }} {{ skill.recent }}"
                                     title="Completed: {{ skill.dateCompleted | slice(0, 10) }}">
-                                    <span>{{ skill.score }}</span></td>
+                                    <span>
+                                        {% if (session.signedInUser or session.signedInDomain) %}
+                                            {{ skill.score }}
+                                        {% else %}
+                                    </span>
+                                </td>
                             {% else %}
                                 <td class="empty-skill"></td>
                             {% endif %}

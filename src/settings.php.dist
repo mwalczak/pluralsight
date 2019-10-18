@@ -36,6 +36,11 @@ return [
         //These users after login see user details
         'users' => [
             'admin@example.com'
+        ],
+
+        //These domain user see more data
+        'domains' => [
+            'example.com'
         ]
     ],
 ];
