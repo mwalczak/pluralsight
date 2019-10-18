@@ -14,8 +14,8 @@
     {% endif %}
     {% if settings.google.clientId and session.signedIn %}
         <a href="#" id="google-sign-out" onclick="signOut();"><i class="fas fa-sign-out-alt"></i>Sign out</a>
-        <a href="{{ path_for('csv') }}"><i class="fas fa-download" title="download csv"></i>Csv</a>
-        {% if settings.pluralsight.userSheet and session.signedIn %}
+        {% if settings.pluralsight.userSheet and session.signedInUser %}
+            <a href="{{ path_for('csv') }}"><i class="fas fa-download" title="download csv"></i>Csv</a>
             <a id="importButton" href="{{ path_for('import') }}"><i class="fas fa-file-import" title="import users"></i>Import</a>
         {% endif %}
     {% endif %}
