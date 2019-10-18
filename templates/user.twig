@@ -26,8 +26,16 @@
             {% if skill.score %}
                 <tr class="{{ skill.level | lower }}">
                     <td>{{skill.title}}</td>
-                    <td>{{skill.score}}</td>
-                    <td>{{skill.percentile}}</td>
+                    <td>
+                        {% if session.signedInUser %}
+                            {{skill.score}}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if session.signedInUser %}
+                            {{skill.percentile}}
+                        {% endif %}
+                    </td>
                     <td>{{skill.level}}</td>
                     <td>{{skill.dateCompleted | slice(0, 10)}}</td>
                 </tr>

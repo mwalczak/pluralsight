@@ -37,7 +37,7 @@
                                 <td class="skill {{ skill.level | lower }} {{ skill.recent }}"
                                     title="Completed: {{ skill.dateCompleted | slice(0, 10) }}">
                                     <span>
-                                        {% if (session.signedInUser or session.signedInDomain) %}
+                                        {% if (session.signedInUser) %}
                                             {{ skill.score }}
                                         {% endif %}
                                     </span>
